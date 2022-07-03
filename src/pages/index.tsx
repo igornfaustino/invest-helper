@@ -1,8 +1,26 @@
+import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import styles from '../../styles/Home.module.css'
+import StockInput from '../components/StockInput'
 
 const Home: NextPage = () => {
+  const { control, handleSubmit, register, formState: { errors } } = useForm()
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'stocks'
+  })
+
+  const addStock = () => {
+    append({
+      name: '',
+      total: '',
+      price: '',
+      percentage: ''
+    })
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,8 +31,39 @@ const Home: NextPage = () => {
 
       <main>
         <h2>Invest helper</h2>
+
+        <form onSubmit={handleSubmit(console.log)}>
+          <FormControl isInvalid={!!errors.newValue}>
+            <FormLabel>Valor aportado</FormLabel>
+            <Controller
+              name="newValue"
+              defaultValue={0}
+              control={control}
+              render={({ field }) => (
+                <Input {...field} />
+              )} />
+          </FormControl>
+
+          <br />
+          <hr />
+          <br />
+
+          {fields.map((field, index) =>
+            <StockInput
+              key={field.id}
+              name={`stocks.${index}`}
+              register={register}
+              onRemove={() => remove(index)}
+            />
+          )}
+
+          <br />
+
+          <Button type="button" onClick={addStock}>Adicionar</Button>
+          <Button type="submit">Calcular</Button>
+        </form>
       </main>
-    </div>
+    </div >
   )
 }
 
