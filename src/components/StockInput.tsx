@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react"
+import { Button, Flex, FormControl, FormLabel, Input, theme } from "@chakra-ui/react"
 import { UseFormRegister } from "react-hook-form"
 
 type Props = {
@@ -10,29 +10,47 @@ type Props = {
 const StockInput = ({ register, name, onRemove }: Props) => {
   return (
     <>
-      <FormControl  >
-        <FormLabel>Ativo</FormLabel>
-        <Input {...register(`${name}.name`)} />
-      </FormControl>
-      <FormControl  >
-        <FormLabel>Valor atual</FormLabel>
-        <Input {...register(`${name}.total`)} />
-      </FormControl>
-      <FormControl  >
-        <FormLabel>Valor por ativo</FormLabel>
-        <Input {...register(`${name}.price`)} />
-      </FormControl>
-      <FormControl  >
-        <FormLabel>Porcentagem esperada</FormLabel>
-        <Input {...register(`${name}.percentage`)} />
-      </FormControl>
+      <Flex
+        gap="8px"
+        alignItems="flex-end"
+        justifyContent="center"
+        padding="20px 30px"
+        bgColor={theme.colors.gray[100]}
+      >
+        <FormControl w="auto">
+          <FormLabel>Ativo</FormLabel>
+          <Input bgColor={theme.colors.white} {...register(`${name}.name`)} />
+        </FormControl>
+        <FormControl w="auto">
+          <FormLabel>Valor atual</FormLabel>
+          <Input bgColor={theme.colors.white} {...register(`${name}.total`)} />
+        </FormControl>
+        <FormControl w="auto">
+          <FormLabel>Valor por ativo</FormLabel>
+          <Input bgColor={theme.colors.white} {...register(`${name}.price`)} />
+        </FormControl>
+        <FormControl w="auto">
+          <FormLabel>Porcentagem esperada</FormLabel>
+          <Input
+            bgColor={theme.colors.white}
+            {...register(`${name}.percentage`)}
+          />
+        </FormControl>
 
-      <Button type="button" onClick={onRemove}>Remover</Button>
-      <br />
-      <hr />
-      <br />
+        <Button
+          type="button"
+          onClick={onRemove}
+          bgColor={theme.colors.red[500]}
+          color={theme.colors.white}
+          _hover={{
+            bgColor: theme.colors.red[200],
+          }}
+        >
+          Remover
+        </Button>
+      </Flex>
     </>
-  )
+  );
 }
 
 export default StockInput
