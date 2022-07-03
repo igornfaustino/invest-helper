@@ -3,8 +3,10 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import VMasker from 'vanilla-masker'
 import Header from '../components/Header'
 import StockInput from '../components/StockInput'
+
 
 type Stock = {
   name: string,
@@ -41,12 +43,17 @@ const Home: NextPage = () => {
   }
 
   const generateReport = ({ stocks, newValue }: FormValues) => {
-    const total = Number(newValue) + stocks.reduce((total, stock) => total + Number(stock.total), 0)
-    const report = stocks.map(stock => {
-      const estimatedValue = total * Number(stock.percentage)
-      console.log(total, estimatedValue)
-      const difference = estimatedValue - Number(stock.total)
-      const numberOsStocksToNegotiate = Math.round(difference / Number(stock.price))
+    const stocksInfo = stocks.map(stock => ({
+      total: Number(VMasker.toMoney(stock.total, { separator: '.' })),
+      price: Number(VMasker.toMoney(stock.price, { separator: '.' })),
+      percentage: Number(stock.percentage),
+      name: stock.name
+    }))
+    const total = Number(newValue) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
+    const report = stocksInfo.map(stock => {
+      const estimatedValue = total * stock.percentage
+      const difference = estimatedValue - stock.total
+      const numberOsStocksToNegotiate = Math.round(difference / stock.price)
       return {
         name: stock.name,
         operation: numberOsStocksToNegotiate
@@ -54,8 +61,6 @@ const Home: NextPage = () => {
     })
     setReport(report)
   }
-
-  console.log(errors)
 
   return (
     <div>
@@ -78,7 +83,7 @@ const Home: NextPage = () => {
               defaultValue={'0'}
               control={control}
               render={({ field }) => (
-                <Input {...field} />
+                <Input {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
               )} />
           </FormControl>
 
@@ -90,9 +95,9 @@ const Home: NextPage = () => {
 
             {fields.map((field, index) =>
               <StockInput
+                control={control}
                 key={field.id}
                 name={`stocks.${index}`}
-                register={register}
                 onRemove={() => remove(index)}
                 errors={errors.stocks?.[index] as any}
               />

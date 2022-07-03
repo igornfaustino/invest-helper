@@ -1,8 +1,9 @@
 import { Button, Flex, FormControl, FormLabel, Input, theme } from "@chakra-ui/react"
-import { UseFormRegister } from "react-hook-form"
+import { Controller } from "react-hook-form"
+import VMasker from 'vanilla-masker'
 
 type Props = {
-  register: UseFormRegister<any>
+  control: any
   onRemove: () => void
   name: string
   errors?: {
@@ -13,7 +14,7 @@ type Props = {
   }
 }
 
-const StockInput = ({ register, name, onRemove, errors }: Props) => {
+const StockInput = ({ control, name, onRemove, errors }: Props) => {
   return (
     <>
       <Flex
@@ -25,29 +26,64 @@ const StockInput = ({ register, name, onRemove, errors }: Props) => {
       >
         <FormControl w="auto" isInvalid={!!errors?.name?.message}>
           <FormLabel>Ativo</FormLabel>
-          <Input bgColor={theme.colors.white} {...register(`${name}.name`, {
-            required: 'campo obrigatório'
-          })} />
+          <Controller
+            name={`${name}.name`}
+            rules={{
+              required: 'campo obrigatório'
+            }}
+            control={control}
+            render={({ field }) => (
+              <Input
+                bgColor={theme.colors.white}
+                {...field} />
+            )}
+          />
         </FormControl>
         <FormControl w="auto" isInvalid={!!errors?.total?.message}>
           <FormLabel>Valor atual</FormLabel>
-          <Input bgColor={theme.colors.white} {...register(`${name}.total`, {
-            required: 'campo obrigatório'
-          })} />
+          <Controller
+            name={`${name}.total`}
+            rules={{
+              required: 'campo obrigatório'
+            }}
+            control={control}
+            render={({ field }) => (
+              <Input
+                bgColor={theme.colors.white}
+                {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
+            )}
+          />
         </FormControl>
         <FormControl w="auto" isInvalid={!!errors?.price?.message}>
           <FormLabel>Valor por ativo</FormLabel>
-          <Input bgColor={theme.colors.white} {...register(`${name}.price`, {
-            required: 'campo obrigatório'
-          })} />
+          <Controller
+            name={`${name}.price`}
+            rules={{
+              required: 'campo obrigatório'
+            }}
+            control={control}
+            render={({ field }) => (
+              <Input
+                bgColor={theme.colors.white}
+                {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
+            )}
+          />
         </FormControl>
         <FormControl w="auto" isInvalid={!!errors?.percentage?.message}>
           <FormLabel>Porcentagem esperada</FormLabel>
-          <Input
-            bgColor={theme.colors.white}
-            {...register(`${name}.percentage`, {
+          <Controller
+            name={`${name}.percentage`}
+            rules={{
               required: 'campo obrigatório'
-            })}
+            }}
+            control={control}
+            render={({ field }) => (
+              <Input
+                bgColor={theme.colors.white}
+                {...field} value={VMasker.toPattern(field.value, {
+                  pattern: '9.99'
+                })} />
+            )}
           />
         </FormControl>
 

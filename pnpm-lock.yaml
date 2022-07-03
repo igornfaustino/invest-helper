@@ -7,6 +7,7 @@ specifiers:
   '@types/node': 18.0.1
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/vanilla-masker': ^1.2.1
   eslint: 8.19.0
   eslint-config-next: 12.2.0
   framer-motion: ^6.3.16
@@ -32,6 +33,7 @@ devDependencies:
   '@types/node': 18.0.1
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/vanilla-masker': 1.2.1
   eslint: 8.19.0
   eslint-config-next: 12.2.0_4x5o4skxv6sl53vpwefgt23khm
   typescript: 4.7.4
@@ -1458,6 +1460,10 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+
+  /@types/vanilla-masker/1.2.1:
+    resolution: {integrity: sha512-b5ajZhEff5Ymf0znJ6ReHd4RIzZxb8QORD52/gC9qiG1wgBG+uraJbOgIXIyn4/OLOko/bmDajXuxn2WnYD3ew==}
+    dev: true
 
   /@typescript-eslint/parser/5.30.4_4x5o4skxv6sl53vpwefgt23khm:
     resolution: {integrity: sha512-/ge1HtU63wVoED4VnlU2o+FPFmi017bPYpeSrCmd8Ycsti4VSxXrmcpXXm7JpI4GT0Aa7qviabv1PEp6L5bboQ==}
