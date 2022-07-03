@@ -1,12 +1,31 @@
 import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import styles from '../../styles/Home.module.css'
 import StockInput from '../components/StockInput'
 
+type Stock = {
+  name: string,
+  total: string,
+  price: string,
+  percentage: string
+}
+
+type FormValues = {
+  stocks: Stock[],
+  newValue: string
+}
+
+type Report = {
+  name: string,
+  operation: number
+}
+
 const Home: NextPage = () => {
-  const { control, handleSubmit, register, formState: { errors } } = useForm()
+  const [report, setReport] = useState<Report[]>([])
+  const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'stocks'
@@ -21,6 +40,21 @@ const Home: NextPage = () => {
     })
   }
 
+  const generateReport = ({ stocks, newValue }: FormValues) => {
+    const total = Number(newValue) + stocks.reduce((total, stock) => total + Number(stock.total), 0)
+    const report = stocks.map(stock => {
+      const estimatedValue = total * Number(stock.percentage)
+      console.log(total, estimatedValue)
+      const difference = estimatedValue - Number(stock.total)
+      const numberOsStocksToNegotiate = Math.round(difference / Number(stock.price))
+      return {
+        name: stock.name,
+        operation: numberOsStocksToNegotiate
+      }
+    })
+    setReport(report)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -32,12 +66,12 @@ const Home: NextPage = () => {
       <main>
         <h2>Invest helper</h2>
 
-        <form onSubmit={handleSubmit(console.log)}>
+        <form onSubmit={handleSubmit(generateReport)}>
           <FormControl isInvalid={!!errors.newValue}>
             <FormLabel>Valor aportado</FormLabel>
             <Controller
               name="newValue"
-              defaultValue={0}
+              defaultValue={'0'}
               control={control}
               render={({ field }) => (
                 <Input {...field} />
@@ -62,6 +96,13 @@ const Home: NextPage = () => {
           <Button type="button" onClick={addStock}>Adicionar</Button>
           <Button type="submit">Calcular</Button>
         </form>
+
+        <br />
+        <br />
+
+        {report.map(({ name, operation }, index) => (
+          <p key={index}><b>{name}</b>: {operation}</p>
+        ))}
       </main>
     </div >
   )
