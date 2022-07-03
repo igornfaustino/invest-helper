@@ -55,6 +55,8 @@ const Home: NextPage = () => {
     setReport(report)
   }
 
+  console.log(errors)
+
   return (
     <div>
       <Head>
@@ -92,6 +94,7 @@ const Home: NextPage = () => {
                 name={`stocks.${index}`}
                 register={register}
                 onRemove={() => remove(index)}
+                errors={errors.stocks?.[index] as any}
               />
             )}
           </Flex>
