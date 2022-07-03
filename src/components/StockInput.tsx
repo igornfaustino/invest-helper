@@ -19,8 +19,9 @@ const StockInput = ({ control, name, onRemove, errors }: Props) => {
     <>
       <Flex
         gap="8px"
-        alignItems="flex-end"
+        alignItems={{ base: "center", md: "flex-end" }}
         justifyContent="center"
+        flexDirection={{ base: "column", sm: "row" }}
         padding="20px 30px"
         bgColor={theme.colors.gray[100]}
       >
