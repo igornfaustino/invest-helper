@@ -81,7 +81,8 @@ const StockInput = ({ control, name, onRemove, errors }: Props) => {
             render={({ field }) => (
               <Input
                 bgColor={theme.colors.white}
-                {...field} value={VMasker.toPattern(field.value, {
+                {...field}
+                value={VMasker.toPattern(field.value, {
                   pattern: '9.99'
                 })} />
             )}

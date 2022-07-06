@@ -46,10 +46,13 @@ const Home: NextPage = () => {
     const stocksInfo = stocks.map(stock => ({
       total: Number(VMasker.toMoney(stock.total, { separator: '.' })),
       price: Number(VMasker.toMoney(stock.price, { separator: '.' })),
-      percentage: Number(stock.percentage),
+      percentage: Number(VMasker.toPattern(stock.percentage, {
+        pattern: '9.99'
+      })),
       name: stock.name
     }))
-    const total = Number(newValue) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
+    const total = Number(VMasker.toMoney(newValue, { separator: '.' })) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
+    console.log(total)
     const report = stocksInfo.map(stock => {
       const estimatedValue = total * stock.percentage
       const difference = estimatedValue - stock.total
@@ -59,6 +62,7 @@ const Home: NextPage = () => {
         operation: numberOsStocksToNegotiate
       }
     })
+    console.log(stocksInfo, stocks)
     setReport(report)
   }
 
@@ -76,8 +80,8 @@ const Home: NextPage = () => {
 
 
       <Box as="main" padding={{ lg: "0px 17%", md: "0px 5px" }}>
-        <FormControl isInvalid={!!errors.newValue}>
-          <Box as="form" margin="0 auto" onSubmit={handleSubmit(generateReport)}>
+        <Box as="form" margin="0 auto" onSubmit={handleSubmit(generateReport)}>
+          <FormControl isInvalid={!!errors.newValue}>
             <FormLabel>Valor aportado</FormLabel>
             <Controller
               name="newValue"
@@ -86,44 +90,45 @@ const Home: NextPage = () => {
               render={({ field }) => (
                 <Input {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
               )} />
-          </Box>
-        </FormControl>
+          </FormControl>
 
-        <br />
-        <hr />
-        <br />
+          <br />
+          <hr />
+          <br />
 
-        <Flex flexDirection="column" gap="16px">
-          {fields.map((field, index) => (
-            <StockInput
-              key={field.id}
-              control={control}
-              name={`stocks.${index}`}
-              onRemove={() => remove(index)}
-              errors={errors.stocks?.[index] as any}
-            />
-          ))}
-        </Flex>
+          <Flex flexDirection="column" gap="16px">
+            {fields.map((field, index) => (
+              <StockInput
+                key={field.id}
+                control={control}
+                name={`stocks.${index}`}
+                onRemove={() => remove(index)}
+                errors={errors.stocks?.[index] as any}
+              />
+            ))}
+          </Flex>
 
-        <br />
+          <br />
 
-        <Flex gap="15px">
-          <Button
-            bgColor={theme.colors.blue[500]}
-            color={theme.colors.white}
-            type="button"
-            onClick={addStock}
-          >
-            Adicionar
-          </Button>
-          <Button
-            bgColor={theme.colors.green[500]}
-            color={theme.colors.white}
-            type="submit"
-          >
-            Calcular
-          </Button>
-        </Flex>
+          <Flex gap="15px">
+            <Button
+              bgColor={theme.colors.blue[500]}
+              color={theme.colors.white}
+              type="button"
+              onClick={addStock}
+            >
+              Adicionar
+            </Button>
+            <Button
+              bgColor={theme.colors.green[500]}
+              color={theme.colors.white}
+              type="submit"
+            >
+              Calcular
+            </Button>
+          </Flex>
+        </Box>
+
       </Box>
 
       <br />
