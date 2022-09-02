@@ -53,7 +53,6 @@ const Home: NextPage = () => {
       name: stock.name
     }))
     const total = money2number(newValue) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
-    console.log(total)
     const report = stocksInfo.map(stock => {
       const estimatedValue = total * stock.percentage
       const difference = estimatedValue - stock.total
@@ -63,7 +62,6 @@ const Home: NextPage = () => {
         operation: numberOsStocksToNegotiate
       }
     })
-    console.log(stocksInfo, stocks)
     setReport(report)
   }
 
