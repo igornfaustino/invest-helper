@@ -2,7 +2,7 @@ import { Box, Button, Flex, FormControl, FormLabel, Input, theme } from '@chakra
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
-import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import VMasker from 'vanilla-masker'
 import Header from '../components/Header'
 import StockInput from '../components/StockInput'
@@ -28,7 +28,8 @@ type Report = {
 
 const Home: NextPage = () => {
   const [report, setReport] = useState<Report[]>([])
-  const { control, handleSubmit, formState: { errors } } = useForm<FormValues>()
+  const methods = useForm<FormValues>()
+  const { control, handleSubmit, formState: { errors } } = methods
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'stocks'
@@ -78,57 +79,59 @@ const Home: NextPage = () => {
       <br />
 
 
-      <Box as="main" padding={{ lg: "0px 17%", md: "0px 5px" }}>
-        <Box as="form" margin="0 auto" onSubmit={handleSubmit(generateReport)}>
-          <FormControl isInvalid={!!errors.newValue}>
-            <FormLabel>Valor aportado</FormLabel>
-            <Controller
-              name="newValue"
-              defaultValue={'0'}
-              control={control}
-              render={({ field }) => (
-                <Input {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
-              )} />
-          </FormControl>
-
-          <br />
-          <hr />
-          <br />
-
-          <Flex flexDirection="column" gap="16px">
-            {fields.map((field, index) => (
-              <StockInput
-                key={field.id}
+      <FormProvider {...methods}>
+        <Box as="main" padding={{ lg: "0px 17%", md: "0px 5px" }}>
+          <Box as="form" margin="0 auto" onSubmit={handleSubmit(generateReport)}>
+            <FormControl isInvalid={!!errors.newValue}>
+              <FormLabel>Valor aportado</FormLabel>
+              <Controller
+                name="newValue"
+                defaultValue={'0'}
                 control={control}
-                name={`stocks.${index}`}
-                onRemove={() => remove(index)}
-                errors={errors.stocks?.[index] as any}
-              />
-            ))}
-          </Flex>
+                render={({ field }) => (
+                  <Input {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
+                )} />
+            </FormControl>
 
-          <br />
+            <br />
+            <hr />
+            <br />
 
-          <Flex gap="15px">
-            <Button
-              bgColor={theme.colors.blue[500]}
-              color={theme.colors.white}
-              type="button"
-              onClick={addStock}
-            >
-              Adicionar
-            </Button>
-            <Button
-              bgColor={theme.colors.green[500]}
-              color={theme.colors.white}
-              type="submit"
-            >
-              Calcular
-            </Button>
-          </Flex>
+            <Flex flexDirection="column" gap="16px">
+              {fields.map((field, index) => (
+                <StockInput
+                  key={field.id}
+                  name={`stocks.${index}`}
+                  onRemove={() => remove(index)}
+                  errors={errors.stocks?.[index] as any}
+                />
+              ))}
+            </Flex>
+
+            <br />
+
+            <Flex gap="15px">
+              <Button
+                bgColor={theme.colors.blue[500]}
+                color={theme.colors.white}
+                type="button"
+                onClick={addStock}
+              >
+                Adicionar
+              </Button>
+              <Button
+                bgColor={theme.colors.green[500]}
+                color={theme.colors.white}
+                type="submit"
+              >
+                Calcular
+              </Button>
+            </Flex>
+          </Box>
+
         </Box>
+      </FormProvider>
 
-      </Box>
 
       <br />
       <br />

@@ -1,9 +1,15 @@
 import { Button, Flex, FormControl, FormLabel, Input, theme } from "@chakra-ui/react"
-import { Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
 import VMasker from 'vanilla-masker'
 
+type Values = {
+  name: string,
+  price: string,
+  percentage: string,
+  total: string,
+}
+
 type Props = {
-  control: any
   onRemove: () => void
   name: string
   errors?: {
@@ -14,7 +20,15 @@ type Props = {
   }
 }
 
-const StockInput = ({ control, name, onRemove, errors }: Props) => {
+const StockInput = ({ name, onRemove, errors }: Props) => {
+  const { control, setValue } = useFormContext()
+
+  const fetchStockInfo = async (stockName: string) => {
+    if (!stockName) return
+    const data = await fetch(`/api/stock/${stockName}`).then(response => response.json())
+    setValue(`${name}.price`, data.price)
+  }
+
   return (
     <>
       <Flex
@@ -36,7 +50,12 @@ const StockInput = ({ control, name, onRemove, errors }: Props) => {
             render={({ field }) => (
               <Input
                 bgColor={theme.colors.white}
-                {...field} />
+                {...field}
+                onBlur={() => {
+                  field.onBlur()
+                  fetchStockInfo(field.value)
+                }}
+              />
             )}
           />
         </FormControl>
