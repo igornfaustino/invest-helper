@@ -6,6 +6,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import VMasker from 'vanilla-masker'
 import Header from '../components/Header'
 import StockInput from '../components/StockInput'
+import { money2number } from '../utils/money'
 
 
 type Stock = {
@@ -27,7 +28,7 @@ type Report = {
 
 const Home: NextPage = () => {
   const [report, setReport] = useState<Report[]>([])
-  const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>()
+  const { control, handleSubmit, formState: { errors } } = useForm<FormValues>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'stocks'
@@ -44,14 +45,14 @@ const Home: NextPage = () => {
 
   const generateReport = ({ stocks, newValue }: FormValues) => {
     const stocksInfo = stocks.map(stock => ({
-      total: Number(VMasker.toMoney(stock.total, { separator: '.' })),
-      price: Number(VMasker.toMoney(stock.price, { separator: '.' })),
+      total: money2number(stock.total),
+      price: money2number(stock.price),
       percentage: Number(VMasker.toPattern(stock.percentage, {
         pattern: '9.99'
       })),
       name: stock.name
     }))
-    const total = Number(VMasker.toMoney(newValue, { separator: '.' })) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
+    const total = money2number(newValue) + stocksInfo.reduce((total, stock) => total + stock.total, 0)
     console.log(total)
     const report = stocksInfo.map(stock => {
       const estimatedValue = total * stock.percentage
