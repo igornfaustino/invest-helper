@@ -6,7 +6,7 @@ type Values = {
   name: string,
   price: string,
   percentage: string,
-  total: string,
+  qtd: number,
 }
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
     name?: { message: string },
     price?: { message: string },
     percentage?: { message: string },
-    total?: { message: string },
+    qtd?: { message: string },
   }
 }
 
@@ -59,18 +59,20 @@ const StockInput = ({ name, onRemove, errors }: Props) => {
             )}
           />
         </FormControl>
-        <FormControl w="auto" isInvalid={!!errors?.total?.message}>
-          <FormLabel>Valor atual</FormLabel>
+        <FormControl w="auto" isInvalid={!!errors?.qtd?.message}>
+          <FormLabel>Quantidade atual</FormLabel>
           <Controller
-            name={`${name}.total`}
+            name={`${name}.qtd`}
             rules={{
               required: 'campo obrigatório'
             }}
             control={control}
             render={({ field }) => (
               <Input
+                type="number"
                 bgColor={theme.colors.white}
-                {...field} value={VMasker.toMoney(field.value, { unit: 'R$' })} />
+                {...field}
+              />
             )}
           />
         </FormControl>

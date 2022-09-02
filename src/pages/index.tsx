@@ -11,7 +11,7 @@ import { money2number } from '../utils/money'
 
 type Stock = {
   name: string,
-  total: string,
+  qtd: number,
   price: string,
   percentage: string
 }
@@ -38,7 +38,7 @@ const Home: NextPage = () => {
   const addStock = () => {
     append({
       name: '',
-      total: '',
+      qtd: 0,
       price: '',
       percentage: ''
     })
@@ -46,7 +46,8 @@ const Home: NextPage = () => {
 
   const generateReport = ({ stocks, newValue }: FormValues) => {
     const stocksInfo = stocks.map(stock => ({
-      total: money2number(stock.total),
+      qtd: stock.qtd,
+      total: money2number(stock.price) * stock.qtd,
       price: money2number(stock.price),
       percentage: Number(VMasker.toPattern(stock.percentage, {
         pattern: '9.99'
